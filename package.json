@@ -1,0 +1,43 @@
+{
+  "name": "edu-cli",
+  "version": "1.0.0",
+  "description": "Tool to get your time restricted edupage tests instantly.",
+  "main": "bin/main.js",
+  "scripts": {
+    "build": "rimraf ./build && tsc -p .",
+    "start": "nodemon",
+    "create": "npm run build && npm run test",
+    "test": "npm i -g && eduhack",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+  },
+  "author": "@lmpsk",
+  "contributors": [
+    "@UrWo"
+  ],
+  "license": "MIT",
+  "bin": {
+    "eduhack": "./build/main.js"
+  },
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "clear": "^0.1.0",
+    "commander": "^5.1.0",
+    "figlet": "^1.4.0",
+    "lolcat": "^1.0.0",
+    "lolcatjs": "^2.4.0",
+    "ora": "^4.0.4",
+    "path": "^0.12.7",
+    "phantom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/clear": "^0.1.0",
+    "@types/figlet": "^1.2.0",
+    "@types/node": "^14.0.1",
+    "@types/phantom": "^3.2.5",
+    "eslint": "^7.0.0",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2"
+  }
+}
