@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import ora from 'ora';
-import { getAccessCrdentials } from './utils';
+import { getAccessCrdentials, CardHolderModel, CardModel } from './utils';
+import chalk from 'chalk';
 
 export default async function(url: string, debug: boolean) {
     var load = ora("Setting up").start();
@@ -15,9 +16,8 @@ export default async function(url: string, debug: boolean) {
     
     //Step 1 - Login
     await page.title().then(async (title) => {
-        console.log(title);
         if (title.includes("Prihlásenie")) {
-            console.log("Attempting to log in.");
+            console.log("- Attempting to log in.");
             const creds_pack = await getAccessCrdentials();
             
             load = ora("Logging in").start();
@@ -50,25 +50,31 @@ export default async function(url: string, debug: boolean) {
     //Step 3 - Obtain data
 
     await page.goto(url);
-    await page.waitForNavigation();
+    //await page.waitForNavigation();
     
     load.text = "Waiting for contents to load"
-    var exam_data: Array<Object> = [];
-
+    var exam_data: CardHolderModel = {};
     setTimeout(async() => {
         await page.evaluate('ETestUtils.cardsData').then((data) => {
-            if (data !== {} || data != null) {
+            if (data !== {} || typeof(data) == "object") {
                 load.text = "Data obtained"
                 load.succeed();
-                exam_data = data as Array<Object>; 
+                exam_data = data as Object; 
+
+                // Step 4 - Process the data
+                var i = 0;
+                Object.values(exam_data).forEach((cardData: CardModel) => {
+                    console.log(chalk.red(`Test Question ${++i}`))
+                    var formatted_output = cardData.description;
+                    console.log(formatted_output?.replace("aid", chalk.green("Correct answer is: ")));
+                });
+            } else {
+                load.text = "An error occured while obtaining data"
+                load.fail();
             }
         });
+        await page.close();
     }, 2000);
     
-    // Step 4 - Process the data
-    exam_data.forEach(element => {
-        //TODO
-    });
-    
-    //await browser.close();
+    return;
 }

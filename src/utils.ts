@@ -1,4 +1,5 @@
 import readlinde from 'readline';
+import chalk from 'chalk';
 
 const rl = readlinde.createInterface({
     input: process.stdin,
@@ -38,8 +39,16 @@ export async function getAccessCrdentials(): Promise<Credentials> {
             username: "NaN",
             password: "NaN",
         };
-        pack.username = await question("us: ");
-        pack.password = await question("pw: ")
+        pack.username = await question(chalk.cyan("Username: "));
+        pack.password = await question(chalk.cyan("Password: "))
         resolve(pack);
     })
+}
+
+export interface CardHolderModel {
+    id?: CardModel;
+}
+
+export interface CardModel {
+    description?: string;
 }
