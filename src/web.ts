@@ -9,7 +9,7 @@ import boxen from 'boxen';
 export default async function(url: string, debug: boolean, marking: boolean, web: boolean) {
     var load = ora("Setting up").start();
 
-    const browser = await puppeteer.launch({headless: !web});
+    const browser = await puppeteer.launch({headless: !web, dumpio: debug});
     const page = (await browser.pages())[0];
 
     await page.goto(url);
@@ -36,6 +36,7 @@ export default async function(url: string, debug: boolean, marking: boolean, web
         if (title.includes("Prihlásenie")) {
             load.text = "Logging process failed.";
             load.fail();
+            process.exit();
         } else {
             load.text = "Sucessfully logged in.";
             load.succeed();
@@ -79,6 +80,6 @@ export default async function(url: string, debug: boolean, marking: boolean, web
             }
         });
         await browser.close();
-        process.exit()
+        process.exit();
     }, 5000);
 }
