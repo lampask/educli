@@ -4,7 +4,7 @@ import clear from 'clear';
 import figlet from 'figlet';
 import path from 'path';
 import program from 'commander';
-import isValidUrl from './utils';
+import { isValidUrl } from './utils';
 import web_process from './web';
 
 const lolcat = require("lolcatjs");
