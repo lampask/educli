@@ -1,6 +1,6 @@
 {
   "name": "edu-exam-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tool to get your time restricted edupage tests instantly.",
   "main": "bin/eduhack.js",
   "scripts": {
