@@ -1,12 +1,15 @@
 import puppeteer from 'puppeteer';
-import ora from 'ora';
 import { getAccessCrdentials, CardHolderModel, CardModel } from './utils';
-import chalk from 'chalk';
 
-export default async function(url: string, debug: boolean) {
+// Design
+import ora from 'ora';
+import chalk from 'chalk';
+import boxen from 'boxen';
+
+export default async function(url: string, debug: boolean, marking: boolean, web: boolean) {
     var load = ora("Setting up").start();
 
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless: !web});
     const page = (await browser.pages())[0];
 
     await page.goto(url);
@@ -63,18 +66,19 @@ export default async function(url: string, debug: boolean) {
 
                 // Step 4 - Process the data
                 var i = 0;
+                var message: string = "";
                 Object.values(exam_data).forEach((cardData: CardModel) => {
-                    console.log(chalk.red(`Test Question ${++i}`))
-                    var formatted_output = cardData.description;
-                    console.log(formatted_output?.replace("aid", chalk.green("Correct answer is: ")));
+                    message += chalk.red(`Test Question ${++i}`);
+                    var formatted_output = cardData.description!!;
+                    message += formatted_output.replace("aid", chalk.green("Correct answer is: "));
                 });
+                console.log(boxen(message, {padding: 1, margin: 1}))
             } else {
                 load.text = "An error occured while obtaining data"
                 load.fail();
             }
         });
-        await page.close();
-    }, 2000);
-    
-    return;
+        await browser.close();
+        process.exit()
+    }, 5000);
 }

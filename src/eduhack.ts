@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import chalk from 'chalk';
 import figlet from 'figlet';
 import program from 'commander';
 import { isValidUrl } from './utils';
@@ -19,8 +18,8 @@ program
 	.usage('[options] <url>')
 	.description(info.description)
 	.option('-d, --debug', 'run in debug mode')
-	.option('-p, --page', 'generate test page with questions and answers')
 	.option('-m, --marking', 'get the point count for each question')
+	.option('-w, --web', 'simulate browser in separate window')
 	.action(function (url) {
 		web_url = url;
 	})
@@ -28,7 +27,7 @@ program
 
 if (web_url) {
 	if (isValidUrl(web_url)) {
-		web_process(web_url, program.debug);
+		web_process(web_url, program.debug, program.marking, program.web);
 	}
 } else {
 		lolcat.fromString(figlet.textSync('edu-cli', { horizontalLayout: 'full' }))
