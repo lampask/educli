@@ -1,7 +1,8 @@
-import readlinde from 'readline';
+import readline from 'readline';
 import chalk from 'chalk';
+import { Writable } from 'stream';
 
-const rl = readlinde.createInterface({
+var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
@@ -32,6 +33,17 @@ interface Credentials {
     password: string;
 }
 const question = (str: string): Promise<string> => new Promise(resolve => rl.question(str, resolve));
+const hiddenQuestion = (str: string): Promise<string> => new Promise((resolve, reject) => {
+    rl.question(str, value => {
+        rl.addListener("line", (data) => {
+            process.stdout.clearLine(-1);
+            readline.cursorTo(process.stdout, 0);
+            process.stdout.write(str + Array(rl.line.length + 1).join('*'));
+        });
+      resolve(value);
+    });
+  });
+
 
 export async function getAccessCrdentials(): Promise<Credentials> {
     return await new Promise(async (resolve, reject) => {
@@ -40,7 +52,7 @@ export async function getAccessCrdentials(): Promise<Credentials> {
             password: "NaN",
         };
         pack.username = await question(chalk.cyan("Username: "));
-        pack.password = await question(chalk.cyan("Password: "))
+        pack.password = await hiddenQuestion(chalk.cyan("Password: "));
         resolve(pack);
     })
 }

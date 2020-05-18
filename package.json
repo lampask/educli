@@ -29,7 +29,6 @@
     "puppeteer": "^3.0.4"
   },
   "devDependencies": {
-    "@types/boxen": "^3.0.1",
     "@types/figlet": "^1.2.0",
     "@types/node": "^14.0.1",
     "@types/puppeteer": "^2.1.0",

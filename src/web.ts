@@ -9,7 +9,7 @@ import boxen from 'boxen';
 export default async function(url: string, debug: boolean, marking: boolean, web: boolean) {
     var load = ora("Setting up").start();
 
-    const browser = await puppeteer.launch({headless: !web, dumpio: debug});
+    const browser = await puppeteer.launch({headless: !web, dumpio: debug, slowMo: 10});
     const page = (await browser.pages())[0];
 
     await page.goto(url);
@@ -72,6 +72,7 @@ export default async function(url: string, debug: boolean, marking: boolean, web
                     message += chalk.red(`Test Question ${++i}`);
                     var formatted_output = cardData.description!!;
                     message += formatted_output.replace("aid", chalk.green("Correct answer is: "));
+                    message += i < Object.keys(exam_data).length ? "---------------------------\n" : ""
                 });
                 console.log(boxen(message, {padding: 1, margin: 1}))
             } else {
