@@ -1,8 +1,8 @@
 # EduExam CLI
 Web automation cli package used to get exam data. Written in node.js and typescript and mainly the pupeteer package.
 
-![npm](https://img.shields.io/npm/v/edu-exam-cli?color=green)
-![CI](https://github.com/lampask/EduCli/workflows/Node.js%20CI/badge.svg?branch=master)
+[![npm](https://img.shields.io/npm/v/edu-exam-cli?color=green)](https://www.npmjs.com/package/edu-exam-cli)
+[![CI](https://github.com/lampask/EduCli/workflows/Node.js%20CI/badge.svg?branch=master)]()
 [![GitHub](https://img.shields.io/github/license/lampask/EduCli)](https://opensource.org/licenses/MIT)
 ## Installation
 Install using node package manager: ```npm i -g edu-exam-cli```

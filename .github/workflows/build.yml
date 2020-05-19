@@ -1,4 +1,4 @@
-name: Run tests
+name: Develop
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: Git checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -29,16 +29,16 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install
-    - run: npm ci
+      run: npm ci
       env:
         CI: true
 
     - name: Build
-    - run: npm run build --if-present
+      run: npm run build --if-present
       env:
         CI: true
 
     - name: Test
-    - run: npm test --if-present
+      run: npm test --if-present
       env:
         CI: true
