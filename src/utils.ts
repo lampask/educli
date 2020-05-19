@@ -1,66 +1,68 @@
-import readline from 'readline';
-import chalk from 'chalk';
-import { Writable } from 'stream';
+import readline from "readline";
+import chalk from "chalk";
 
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const url_pattern = new RegExp(
+  "^(https?:\\/\\/)?" + // protocol
+  "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+  "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+  "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+  "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+    "(\\#[-a-z\\d_]*)?$",
+  "i"
+); // fragment locator
 
-var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+const edupage_pattern = new RegExp(
+  "^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]edupage+).(com)?(/.*)?$"
+);
 
-
-export function isValidUrl(url: string) {
-    if (!!pattern.test(url)) {
-        if (url.includes('edupage')) {
-            return true;
-        } else {
-            console.log("The provided url is not valid edupage url.")
-        }
+export function is_valid_url(url: string): boolean {
+  if (url_pattern.test(url)) {
+    if (edupage_pattern.test(url)) {
+      return true;
     } else {
-        console.log("Invalid url address provided.")
+      console.log("The provided url is not valid edupage url.");
     }
-    return false;
+  } else {
+    console.log("Invalid url address provided.");
+  }
+  return false;
 }
 
 interface Credentials {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
-const question = (str: string): Promise<string> => new Promise(resolve => rl.question(str, resolve));
-const hiddenQuestion = (str: string): Promise<string> => new Promise((resolve, reject) => {
-    rl.question(str, value => {
-        rl.addListener("line", (data) => {
-            process.stdout.clearLine(-1);
-            readline.cursorTo(process.stdout, 0);
-            process.stdout.write(str + Array(rl.line.length + 1).join('*'));
-        });
-      resolve(value);
+const question = (str: string): Promise<string> =>
+  new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question(str, (data) => {
+      rl.close();
+      resolve(data);
     });
   });
 
+// TODO: Finish hidden writable
+const hidden_question = (str: string): Promise<string> => question(str);
 
-export async function getAccessCrdentials(): Promise<Credentials> {
-    return await new Promise(async (resolve, reject) => {
-        let pack:Credentials = {
-            username: "NaN",
-            password: "NaN",
-        };
-        pack.username = await question(chalk.cyan("Username: "));
-        pack.password = await hiddenQuestion(chalk.cyan("Password: "));
-        resolve(pack);
-    })
+export async function get_access_crdentials(): Promise<Credentials> {
+  const pack: Credentials = {
+    username: "NaN",
+    password: "NaN",
+  };
+
+  pack.username = await question(chalk.cyan("Username: "));
+  pack.password = await hidden_question(chalk.cyan("Password: "));
+
+  return pack;
 }
 
 export interface CardHolderModel {
-    id?: CardModel;
+  id?: CardModel;
 }
 
 export interface CardModel {
-    description?: string;
+  description?: string;
 }
