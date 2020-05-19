@@ -5,10 +5,17 @@
     "lib": ["es6", "es2015", "dom"],
     "declaration": true,
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": ".",
     "strict": true,
     "types": ["node"],
     "esModuleInterop": true,
     "resolveJsonModule": true
-  }
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

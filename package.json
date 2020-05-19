@@ -1,22 +1,29 @@
 {
   "name": "edu-exam-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Tool to get your time restricted edupage tests instantly.",
   "main": "bin/eduhack.js",
   "scripts": {
-    "build": "rimraf ./lib && tsc -p .",
+    "build": "npm run lint && rimraf ./lib && tsc -p .",
     "start": "nodemon",
-    "create": "npm run build && npm run test",
-    "test": "npm i -g && eduhack",
-    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+    "create": "npm run build && npm run check",
+    "check": "npm i -g && eduhack",
+    "lint": "eslint ./src --quiet --ext .ts",
+    "lint-tests": "eslint ./tests --quiet --ext .test.ts",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
+    "test": "npm run lint-tests && mocha -r ts-node/register tests/**/*.test.ts",
+    "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },
   "author": "@lmpsk",
   "contributors": [
     "@UrWo"
   ],
+  "files": [
+    "./lib/**/*"
+  ],
   "license": "MIT",
   "bin": {
-    "eduhack": "./lib/eduhack.js"
+    "eduhack": "./lib/src/eduhack.js"
   },
   "dependencies": {
     "boxen": "^4.2.0",
@@ -29,10 +36,22 @@
     "puppeteer": "^3.0.4"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.11",
     "@types/figlet": "^1.2.0",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.1",
     "@types/puppeteer": "^2.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-snakecasejs": "^2.2.0",
+    "mocha": "^7.1.2",
     "nodemon": "^2.0.4",
+    "nyc": "^15.0.1",
+    "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.1",
     "typescript": "^3.9.2"
