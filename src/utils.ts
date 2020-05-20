@@ -12,7 +12,7 @@ const url_pattern = new RegExp(
 ); // fragment locator
 
 const edupage_pattern = new RegExp(
-  "^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]edupage+).(com)?(/.*)?$"
+  "^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]edupage+).(org)?(/.*)?$"
 );
 
 export function is_valid_url(url: string): boolean {
