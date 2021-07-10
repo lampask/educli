@@ -4,7 +4,7 @@ Web automation cli package used to get exam data. Written in node.js and typescr
 [![npm](https://img.shields.io/npm/v/edu-exam-cli?color=green)](https://www.npmjs.com/package/edu-exam-cli)
 [![Stable](https://github.com/lampask/educli/workflows/Stable/badge.svg?branch=master)](https://github.com/lampask/educli/actions?query=workflow%3AStable)
 [![Develop](https://github.com/lampask/educli/workflows/Develop/badge.svg?branch=develop)](https://github.com/lampask/educli/actions?query=workflow%3ADevelop)
-[![GitHub](https://img.shields.io/github/license/lampask/EduCli)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/github/license/lampask/educli)](https://opensource.org/licenses/MIT)
 
 
 !!!! This package is DEPRECATED and it no longer works as intended.
