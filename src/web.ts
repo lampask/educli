@@ -10,14 +10,14 @@ export default async function (
   url: string,
   debug: boolean,
   marking: boolean,
-  web: boolean
+  web: boolean,
+  timeout: string
 ): Promise<void> {
   let load = ora("Setting up").start();
 
   const browser = await puppeteer.launch({
     headless: !web,
     dumpio: debug,
-    slowMo: 10,
   });
   const page = (await browser.pages())[0];
 
@@ -38,6 +38,8 @@ export default async function (
       await page.click(".skgdFormSubmit");
     }
   });
+
+  await page.waitFor(parseInt(timeout) / 2);
 
   //Step 2 - Check logged status
   let success = false;
@@ -66,36 +68,48 @@ export default async function (
   //await page.waitForNavigation();
 
   load.text = "Waiting for contents to load";
-  let exam_data: CardHolderModel = {};
-  setTimeout(async () => {
-    await page.evaluate("ETestUtils.cardsData").then((data) => {
-      if (data !== {} || typeof data == "object") {
-        load.text = "Data obtained";
-        load.succeed();
-        exam_data = data as Record<string, any>;
+  await page.waitFor(parseInt(timeout));
 
-        // Step 4 - Process the data
-        let i = 0;
-        let message = "";
-        Object.values(exam_data).forEach((card_data) => {
-          message += chalk.red(`Test Question ${++i}`);
-          const formatted_output = card_data.description!!;
-          message += formatted_output.replace(
-            "aid",
-            chalk.green("Correct answer is: ")
-          );
-          message +=
-            i < Object.keys(exam_data).length
-              ? "---------------------------\n"
-              : "";
+  let exam_data: CardHolderModel = {};
+  await page.evaluate("ETestUtils.cardsData").then((data) => {
+    if (data !== {} || typeof data == "object") {
+      load.text = "Data obtained";
+      load.succeed();
+      exam_data = data as Record<string, any>;
+
+      // Step 4 - Process the data
+      let i = 0;
+      let message = "";
+      Object.values(exam_data).forEach((card_data) => {
+        message += chalk.red(`Test Question ${++i}`);
+        const formatted_output = card_data.description;
+        message += formatted_output.replace(
+          "aid",
+          chalk.green("Correct answer is: ")
+        );
+        card_data.content.widgets.forEach((widget: any) => {
+          if (widget.widgetClass === "ConnectAnswerETestWidget") {
+            widget.props.pairs.forEach((pair: any) => {
+              message += chalk.green(
+                `${pair.l.replace(/(<([^>]+)>)/gi, "")} <=> ${pair.r.replace(
+                  /(<([^>]+)>)/gi,
+                  ""
+                )} \n`
+              );
+            });
+          }
         });
-        console.log(boxen(message, { padding: 1, margin: 1 }));
-      } else {
-        load.text = "An error occured while obtaining data";
-        load.fail();
-      }
-    });
-    await browser.close();
-    process.exit();
-  }, 5000);
+        message +=
+          i < Object.keys(exam_data).length
+            ? "---------------------------\n"
+            : "";
+      });
+      console.log(boxen(message, { padding: 1, margin: 1 }));
+    } else {
+      load.text = "An error occured while obtaining data";
+      load.fail();
+    }
+  });
+  await browser.close();
+  process.exit();
 }

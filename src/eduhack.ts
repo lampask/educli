@@ -20,6 +20,11 @@ program
   .option("-d, --debug", "run in debug mode")
   .option("-m, --marking", "get the point count for each question")
   .option("-w, --web", "simulate browser in separate window")
+  .option(
+    "-t, --timeout [ms]",
+    "modify default waiting time in ms for content loading",
+    "3000"
+  )
   .action(function (url) {
     web_url = url;
   })
@@ -27,7 +32,13 @@ program
 
 if (web_url) {
   if (is_valid_url(web_url)) {
-    web_process(web_url, program.debug, program.marking, program.web);
+    web_process(
+      web_url,
+      program.debug,
+      program.marking,
+      program.web,
+      program.timeout
+    );
   }
 } else {
   lolcat.fromString(figlet.textSync("edu-cli", { horizontalLayout: "full" }));
